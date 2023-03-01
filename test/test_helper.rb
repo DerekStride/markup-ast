@@ -21,27 +21,33 @@ end
 
 module SpecHelper
   module ClassMethods
-    def excluded_spec_file
-      @excluded_spec_file ||= begin
-        f = File.open(
-          File.join(__dir__, "excludes", "GeneratedSpecTest.rb"),
-          "a",
-        )
-        f.sync = true
-        f.truncate(0)
-        f
+    def run(*args)
+      super
+      return unless ENV["UPDATE_SPECS"]
+
+      failed_specs.sort.each do |name|
+        excluded_spec_file.puts "exclude :#{name}, \"failed\""
       end
+      excluded_spec_file.close
+    end
+
+    def failed_specs
+      @failed_specs ||= []
+    end
+
+    def excluded_spec_file
+      @excluded_spec_file ||= File.open(File.join(__dir__, "excludes", "GeneratedSpecTest.rb"), "a")
     end
   end
 
   def self.included(base)
     base.extend(ClassMethods)
+    return unless ENV["UPDATE_SPECS"]
+
+    base.excluded_spec_file.truncate(0)
   end
 
   def teardown
-    return unless ENV["UPDATE_SPECS"]
-    return if passed?
-
-    self.class.excluded_spec_file.puts "exclude :#{name}, \"failed\""
+    self.class.failed_specs << name unless passed?
   end
 end
