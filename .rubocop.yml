@@ -1,0 +1,30 @@
+AllCops:
+  TargetRubyVersion: 3.2
+  SuggestExtensions: false
+  NewCops: enable
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
+Style/Documentation:
+  Exclude:
+    - lib/markup/ast/support/**/*
+    - test/**/*
+
+Metrics/AbcSize:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/MethodLength:
+  Enabled: false
+
