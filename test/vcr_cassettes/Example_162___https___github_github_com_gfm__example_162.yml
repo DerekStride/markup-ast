@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"mode":"gfm","text":"   [foo]:\n      /url\n           ''the title''\n\n[foo]\n\n"}'
+    headers:
+      Accept:
+      - application/vnd.github.raw
+      User-Agent:
+      - Octokit Ruby Gem 6.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - token <GH_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Tue, 28 Feb 2023 04:24:22 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Commonmarker-Version:
+      - 0.23.8
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      - Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - W/"fab3453ac4979869a360b88ac6308fd56a39f91d7f34ffd07a58228289b973ba"
+      Github-Authentication-Token-Expiration:
+      - '2023-03-06 22:34:32 -0500'
+      X-Github-Media-Type:
+      - github.v3; param=raw
+      X-Github-Api-Version-Selected:
+      - '2022-11-28'
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4422'
+      X-Ratelimit-Reset:
+      - '1677559349'
+      X-Ratelimit-Used:
+      - '578'
+      X-Ratelimit-Resource:
+      - core
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - '0'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      X-Github-Request-Id:
+      - E2E3:6CAD:8A21CAC:11C1A7F7:63FD81F6
+    body:
+      encoding: ASCII-8BIT
+      string: <p><a href="/url" title="the title">foo</a></p>
+  recorded_at: Tue, 28 Feb 2023 04:24:22 GMT
+recorded_with: VCR 6.1.0
