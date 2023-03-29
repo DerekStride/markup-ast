@@ -15,7 +15,7 @@ namespace :treesitter do
     target_md = File.join(app_root, "treesitter", "markdown.so")
 
     parser_inline_so = File.join(tmp_dir, repo_dir, "tree-sitter-markdown-inline", "parser.so")
-    target_inline = File.join(app_root, "treesitter", "markdown-inline.so")
+    target_inline = File.join(app_root, "treesitter", "markdown_inline.so")
 
     next if [parser_md_so, target_md, parser_inline_so, target_inline].all? { |f| File.exist?(f) }
 
