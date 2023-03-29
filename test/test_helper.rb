@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "markup/ast"
 
 require "pry-byebug"
 require "minitest/autorun"
@@ -9,13 +8,21 @@ require "minitest/excludes"
 require "minitest/focus"
 require "minitest/reporters"
 
+require "markup/ast"
+
 Minitest::Reporters.use!
 
+TreeStand.configure do
+  config.parser_path = File.join(__dir__, "..", "treesitter")
+end
+
 module MarkdownHelper
+  def setup
+    @parser = Markup::Ast::MarkdownParser.new
+  end
+
   def render(markdown)
-    <<~HTML
-      <!DOCTYPE html>
-    HTML
+    "#{@parser.parse(markdown).to_html}\n"
   end
 end
 

@@ -21,4 +21,3 @@ group :test do
   gem "minitest-focus", "~> 1.3"
   gem "minitest-reporters", "~> 1.6"
 end
-
