@@ -6,19 +6,32 @@ module Markup
       class InlineVisitor < TreeStand::Visitor
         attr_reader :stack
 
-        def initialize(node)
-          super(node)
-          @stack = []
+        def initialize(root, inline_root, ast_node)
+          super(root)
+          @inline_root = inline_root
+          @stack = [ast_node]
         end
 
-        def on_emphasis(node) = @stack << Emphasis.new(node)
-        def on_code_span(node) = @stack << CodeSpan.new(node)
-        def on_strong_emphasis(node) = @stack << Strong.new(node)
+        def around_inline(_)
+          yield
+          @stack.last.then do |ast_node|
+            document_range = ast_node.content_start...ast_node.root.range.end_byte
+            ast_node.children << Text.new(@inline_root.tree.document[document_range])
+          end
+        end
+
+        def on_emphasis(node) = push_inline(Emphasis, node)
+        def on_code_span(node) = push_inline(CodeSpan, node)
+        def on_strong_emphasis(node) = push_inline(Strong, node)
 
         def on_emphasis_delimiter(node) = handle_delimiter(node)
         def on_code_span_delimiter(node) = handle_delimiter(node)
 
         private
+
+        def push_inline(type, node)
+          @stack << type.new(node, @inline_root)
+        end
 
         def handle_delimiter(node)
           case @stack.last.delimit(node, @stack[-2])

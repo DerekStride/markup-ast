@@ -8,13 +8,17 @@ AllCops:
 
 Layout/LineLength:
   Max: 120
+Lint/MissingSuper:
+  Enabled: false
 Metrics/AbcSize:
   Enabled: false
-Style/Documentation:
+Metrics/CyclomaticComplexity:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
-Lint/MissingSuper:
+Metrics/PerceivedComplexity:
+  Enabled: false
+Style/Documentation:
   Enabled: false
 Style/StringLiterals:
   Enabled: true

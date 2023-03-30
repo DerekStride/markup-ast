@@ -17,18 +17,30 @@ module Markup
     class Error < StandardError; end
 
     class Node
+      attr_accessor :content_start
       attr_reader :root, :children
 
       def initialize(root)
         @root = root
         @children = []
+        @content_start = root.range.start_byte
       end
 
       def to_html = "<#{tag}>#{children.map(&:to_html).join}</#{tag}>"
       def tag = raise NotImplementedError
     end
 
-    Text = Struct.new(:to_html)
+    Text = Data.define(:text) do
+      def to_html = text.chomp
+    end
+
+    class Document < Node
+      def to_html = children.map(&:to_html).join
+    end
+
+    class Section < Node
+      def to_html = children.map(&:to_html).join
+    end
 
     class Heading < Node
       attr_accessor :level
@@ -41,21 +53,22 @@ module Markup
     end
 
     class InlineNode < Node
-      attr_accessor :content_start
       attr_reader :delimiters
 
-      def initialize(root)
+      def initialize(root, inline_root)
         super(root)
+        @inline_root = inline_root
         @delimiters = []
       end
 
-      def delimit(node, parent)
+      def delimit(node, parent_ast_node)
         @delimiters << node
 
         self.content_start = node.range.end_byte if @delimiters.size == inner_delimiter_start
 
-        if @delimiters.size == 1 && parent
-          parent.children << Text.new(node.tree.document[parent.content_start...node.range.start_byte])
+        if @delimiters.size == 1
+          document_range = parent_ast_node.content_start...(@inline_root.range.start_byte + node.range.start_byte)
+          parent_ast_node.children << Text.new(parent_ast_node.root.tree.document[document_range])
         end
 
         if @delimiters.size == inner_delimiter_end
@@ -64,7 +77,7 @@ module Markup
 
         return unless @delimiters.size == delimiter_count
 
-        parent.content_start = node.range.end_byte if parent
+        parent_ast_node.content_start = @inline_root.range.start_byte + node.range.end_byte
         :pop
       end
 

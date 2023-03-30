@@ -1,5 +1,31 @@
 # frozen_string_literal: true
 
+module TreeStand
+  class Visitor
+    def visit_node(node)
+      if respond_to?("on_#{node.type}")
+        public_send("on_#{node.type}", node)
+        node.each { |child| visit_node(child) }
+      elsif respond_to?("around_#{node.type}")
+        public_send("around_#{node.type}", node) do
+          node.each { |child| visit_node(child) }
+        end
+      elsif respond_to?(:_around_default)
+        _around_default(node) do
+          node.each { |child| visit_node(child) }
+        end
+      else
+        _on_default(node)
+        node.each { |child| visit_node(child) }
+      end
+    end
+
+    def _on_default(node)
+      # noop
+    end
+  end
+end
+
 module Markup
   module Ast
     module Visitors
@@ -14,29 +40,37 @@ module Markup
 
         def on_inline(node)
           tree = @inline_parser.parse_string(node.text)
+          Visitors::InlineVisitor.new(tree.root_node, node, @stack.last).visit
+        end
 
-          if tree.root_node.any?
-            visitor = Visitors::InlineVisitor.new(tree.root_node).visit
-            @stack.last.children.concat(visitor.stack)
-          else
-            @stack.last.children << Text.new(node.text.strip)
+        def around_document(node, &) = push_stack(Document.new(node), &)
+        def around_section(node, &) = push_stack(Section.new(node), &)
+        def around_paragraph(node, &) = push_stack(Paragraph.new(node), &)
+        def around_atx_heading(node, &) = push_stack(Heading.new(node), &)
+
+        def on_atx_h1_marker(node) = handle_atx_marker(node, 1)
+        def on_atx_h2_marker(node) = handle_atx_marker(node, 2)
+        def on_atx_h3_marker(node) = handle_atx_marker(node, 3)
+        def on_atx_h4_marker(node) = handle_atx_marker(node, 4)
+        def on_atx_h5_marker(node) = handle_atx_marker(node, 5)
+        def on_atx_h6_marker(node) = handle_atx_marker(node, 6)
+
+        private
+
+        def handle_atx_marker(node, level)
+          @stack.last.then do |ast_node|
+            ast_node.level = level
+            ast_node.content_start = node.range.end_byte + 1
           end
         end
 
-        def on_paragraph(node)
-          @stack.push(Paragraph.new(node))
-        end
+        def push_stack(ast_node)
+          @stack << ast_node
+          yield
+          return if @stack.size == 1
 
-        def on_atx_heading(node)
-          @stack.push(Heading.new(node))
+          @stack[-2].children << @stack.pop
         end
-
-        def on_atx_h1_marker(*) = @stack.last.level = 1
-        def on_atx_h2_marker(*) = @stack.last.level = 2
-        def on_atx_h3_marker(*) = @stack.last.level = 3
-        def on_atx_h4_marker(*) = @stack.last.level = 4
-        def on_atx_h5_marker(*) = @stack.last.level = 5
-        def on_atx_h6_marker(*) = @stack.last.level = 6
       end
     end
   end

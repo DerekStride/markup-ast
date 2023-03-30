@@ -21,6 +21,17 @@ module Markup
         MARKDOWN
       end
 
+      def test_multiple_blocks
+        expected = <<~HTML.chomp
+          <h1>Hello</h1><p>world, we <code>have</code> nested code spans.</p>
+        HTML
+        assert_rendered(<<~MARKDOWN, expected)
+          # Hello
+
+          world, we `have` nested code spans.
+        MARKDOWN
+      end
+
       def test_atx_heading
         [
           ["# Hello\n", "<h1>Hello</h1>"],
