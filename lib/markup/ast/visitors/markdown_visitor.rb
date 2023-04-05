@@ -50,24 +50,8 @@ module Markup
 
         def around_fenced_code_block(node)
           push_stack(Pre.new(node)) do
-            ast_node = CodeSpan.new(node, node)
-            @stack << ast_node
+            @stack << CodeSpan.new(node, node)
             yield
-            raise if ast_node.children.size != 1
-
-            starting_delimiter = ast_node.delimiters.first
-            prefix_indentation = starting_delimiter.range.end_byte - starting_delimiter.range.start_byte - 3
-            text_node = ast_node.children.pop
-            text = text_node.text.lines.map do |line|
-              strip_idx = 0
-              prefix_indentation.times do
-                break unless line[strip_idx] == " "
-
-                strip_idx += 1
-              end
-              line[strip_idx..]
-            end
-            ast_node.children << Text.new(text.join)
           end
         end
 

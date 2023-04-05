@@ -64,12 +64,18 @@ module Markup
           bbb
           ```
         MARKDOWN
+      end
+
+      def test_fenced_code_block_with_indentation
         assert_rendered(<<~MARKDOWN, "<pre><code>aaa\nbbb</code></pre>")
            ```
            aaa
           bbb
           ```
         MARKDOWN
+      end
+
+      def test_fenced_code_block_with_multiple_instances_of_indentation
         assert_rendered(<<~MARKDOWN, "<pre><code>aaa\nbbb\nccc</code></pre>")
             ```
           aaa
