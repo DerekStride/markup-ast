@@ -2,7 +2,7 @@
 
 require "bundler/gem_tasks"
 require "rake/testtask"
-require "pry-byebug"
+require "debug"
 require "octokit"
 require "vcr"
 

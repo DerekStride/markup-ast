@@ -5,10 +5,10 @@ source "https://rubygems.org"
 gemspec
 
 group :development, :test do
+  gem "debug", "~> 1.0"
   gem "erb", "~> 4.0"
   gem "faraday-retry", "~> 2.0"
   gem "octokit", "~> 6.0"
-  gem "pry-byebug", "~> 3.10"
   gem "rake", "~> 13.0"
   gem "rubocop", "~> 1.21"
   gem "vcr", "~> 6.1"

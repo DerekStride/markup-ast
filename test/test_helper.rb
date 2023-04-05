@@ -2,7 +2,7 @@
 
 require "bundler/setup"
 
-require "pry-byebug"
+require "debug"
 require "minitest/autorun"
 require "minitest/excludes"
 require "minitest/focus"
