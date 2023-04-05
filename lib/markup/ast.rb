@@ -52,6 +52,10 @@ module Markup
       def tag = "p"
     end
 
+    class Pre < Node
+      def tag = "pre"
+    end
+
     class InlineNode < Node
       attr_reader :delimiters
 

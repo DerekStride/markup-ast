@@ -53,6 +53,32 @@ module Markup
         assert_rendered("`Hello`\n", "<p><code>Hello</code></p>")
       end
 
+      def test_fenced_code_block
+        assert_rendered(<<~MARKDOWN, "<pre><code></code></pre>")
+          ```
+          ```
+        MARKDOWN
+        assert_rendered(<<~MARKDOWN, "<pre><code>aaa\nbbb</code></pre>")
+          ```
+          aaa
+          bbb
+          ```
+        MARKDOWN
+        assert_rendered(<<~MARKDOWN, "<pre><code>aaa\nbbb</code></pre>")
+           ```
+           aaa
+          bbb
+          ```
+        MARKDOWN
+        assert_rendered(<<~MARKDOWN, "<pre><code>aaa\nbbb\nccc</code></pre>")
+            ```
+          aaa
+            bbb
+          ccc
+            ```
+        MARKDOWN
+      end
+
       def test_emphasis
         assert_rendered("*Hello*\n", "<p><em>Hello</em></p>")
       end
