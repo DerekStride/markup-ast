@@ -21,12 +21,18 @@ module Markup
         def around_section(node, &) = push_stack(Section.new(node), &)
         def around_paragraph(node, &) = push_stack(Paragraph.new(node), &)
         def around_atx_heading(node, &) = push_stack(Heading.new(node), &)
+        def around_list(node, &) = push_stack(UnorderedList.new(node), &)
 
-        def around_fenced_code_block(node)
-          push_stack(Pre.new(node)) do
-            @stack << CodeSpan.new(node, node)
+        def around_list_item(node)
+          push_stack(ListItem.new(node)) do
             yield
+            collapse_children!
           end
+        end
+
+        def around_fenced_code_block(node, &)
+          @stack << Pre.new(node)
+          push_stack(CodeSpan.new(node, node), &)
         end
 
         def on_code_fence_content(node)
@@ -58,6 +64,11 @@ module Markup
 
             @stack[-2].children << @stack.pop
           end
+        end
+
+        def collapse_children!
+          @stack.last.children.map!(&:children)
+          @stack.last.children.flatten!
         end
 
         def push_stack(ast_node)

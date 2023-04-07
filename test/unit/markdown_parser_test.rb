@@ -96,6 +96,36 @@ module Markup
         )
       end
 
+      def test_lists
+        assert_rendered(
+          <<~MARKDOWN,
+            - one
+            - two
+          MARKDOWN
+          <<~HTML.chomp,
+            <ul>
+            <li>one</li>
+            <li>two</li>
+            </ul>
+          HTML
+        )
+      end
+
+      def test_lists_with_inline_markup
+        assert_rendered(
+          <<~MARKDOWN,
+            - *one*
+            - **two**
+          MARKDOWN
+          <<~HTML.chomp,
+            <ul>
+            <li><em>one</em></li>
+            <li><strong>two</strong></li>
+            </ul>
+          HTML
+        )
+      end
+
       private
 
       def assert_rendered(markdown, html)

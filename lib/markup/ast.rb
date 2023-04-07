@@ -56,6 +56,15 @@ module Markup
       def tag = "pre"
     end
 
+    class UnorderedList < Node
+      def to_html = "<ul>\n#{children.map(&:to_html).join}</ul>"
+    end
+
+    class ListItem < Node
+      def tag = "li"
+      def to_html = "#{super}\n"
+    end
+
     class InlineNode < Node
       attr_reader :delimiters
 
