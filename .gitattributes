@@ -1,0 +1,3 @@
+test/excludes/GeneratedSpecTest.rb linguist-generated
+test/spec/** linguist-generated
+test/vcr_cassettes/** linguist-generated
