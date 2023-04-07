@@ -1,31 +1,5 @@
 # frozen_string_literal: true
 
-module TreeStand
-  class Visitor
-    def visit_node(node)
-      if respond_to?("on_#{node.type}")
-        public_send("on_#{node.type}", node)
-        node.each { |child| visit_node(child) }
-      elsif respond_to?("around_#{node.type}")
-        public_send("around_#{node.type}", node) do
-          node.each { |child| visit_node(child) }
-        end
-      elsif respond_to?(:_around_default)
-        _around_default(node) do
-          node.each { |child| visit_node(child) }
-        end
-      else
-        _on_default(node)
-        node.each { |child| visit_node(child) }
-      end
-    end
-
-    def _on_default(node)
-      # noop
-    end
-  end
-end
-
 module Markup
   module Ast
     module Visitors
